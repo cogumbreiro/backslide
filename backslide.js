@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const glob = require('glob');
 const Mustache = require('mustache');
-const sass = require('node-sass');
+const sass = require('sass');
 const inliner = require('web-resource-inliner');
 const Progress = require('progress');
 const browserSync = require('browser-sync').create('bs-server');
@@ -226,18 +226,18 @@ class BackslideCli {
       })
       .then(() => {
         // Find node_modules path
-        const sassPath = require.resolve('node-sass');
+        const sassPath = require.resolve('sass');
         const nodeModulesPath = sassPath.slice(
           0,
-          sassPath.lastIndexOf('node-sass')
+          sassPath.lastIndexOf('sass')
         );
-        const sassBin = `.bin/node-sass${isWindows ? '.cmd' : ''}`;
+        const sassBin = `sass${isWindows ? '.cmd' : '.js'}`;
 
         // Run node-sass in watch mode (no API >_<)
         child.spawn(
           path.join(nodeModulesPath, sassBin),
-          ['-w', path.join(TemplateDir, SassTemplate), '-o', TemporaryDir],
-          {stdio: 'inherit'}
+          ['-w', path.join(TemplateDir, SassTemplate)],
+          {stdio: 'ignore'}
         );
       })
       .then(() => nextFile())
